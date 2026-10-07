@@ -1,0 +1,17 @@
+# Models used in scored runs. Record the model id as the agent itself reports
+# it in its session log. Fill in before the first scored run.
+models:
+  - id: TBD                   # as reported by the agent
+    provider: TBD             # hosted provider, or "local"
+    family: TBD
+    local_digest: TBD         # for local models: the weights digest
+    stated_knowledge_cutoff: TBD
+    pinned_on: TBD            # date
+    sampling: TBD             # "default" if the agent exposes no setting
+  - id: TBD
+    provider: TBD
+    family: TBD
+    local_digest: TBD
+    stated_knowledge_cutoff: TBD
+    pinned_on: TBD
+    sampling: TBD

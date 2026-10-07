@@ -1,0 +1,98 @@
+# fixjack verify as a required status check.
+#
+# Runs on pull requests that touch a lockfile. Resolves advisory ids from the
+# repository's own Dependabot alerts (never from the PR text), reads the
+# lockfile diff, and asks the verifier. Set the repository variable
+# FIXJACK_MODE to report-only (Level 2), validate (Level 3) or prevent (Level 4).
+#
+# FIXJACK_ALERTS_TOKEN must be a fine-grained token or app token with
+# "Dependabot alerts: read"; the default GITHUB_TOKEN does not carry it. If the
+# lookup fails, the verdict routes to a human; it never allows.
+#
+# On GitHub Enterprise Server the alert lookup follows github.api_url. Behind an
+# internal registry mirror, set the repository variable FIXJACK_ALLOW_HOSTS to a
+# comma-separated host list (it replaces the default allowlist). Runners need
+# egress to api.osv.dev, api.github.com (the public advisory database), the
+# npm or PyPI metadata and attestation endpoints, and the CISA KEV feed; an
+# authority it cannot reach routes the PR to a human.
+
+name: fixjack verify
+
+on:
+  pull_request:
+    paths:
+      - "package-lock.json"
+      - "npm-shrinkwrap.json"
+      - "yarn.lock"
+      - "pnpm-lock.yaml"
+      - "requirements*.txt"
+      - "poetry.lock"
+      - "uv.lock"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Pin the gate itself to a release, never a branch. In your copy, replace
+      # the tag with that tag's full commit SHA. For runners with no egress,
+      # vendor the wheel and pip install it from a path.
+      - name: Install fixjack
+        run: pip install "git+https://github.com/annaladasur/fixjack@v0.1.0"
+
+      - name: Lockfile diff against the base branch
+        run: |
+          git diff "origin/${{ github.base_ref }}...HEAD" -- \
+            package-lock.json npm-shrinkwrap.json yarn.lock pnpm-lock.yaml \
+            'requirements*.txt' poetry.lock uv.lock > lockfile.patch
+          wc -l lockfile.patch
+
+      - name: Verify
+        id: verify
+        env:
+          FIXJACK_ALERTS_TOKEN: ${{ secrets.FIXJACK_ALERTS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIXJACK_GITHUB_API: ${{ github.api_url }}
+          FIXJACK_ALLOW_HOSTS: ${{ vars.FIXJACK_ALLOW_HOSTS }}
+        run: |
+          ACTOR="human"
+          case "${{ github.event.pull_request.user.login }}" in
+            dependabot*|renovate*|*\[bot\]) ACTOR="bot" ;;
+            *copilot*|*codex*|*claude*|*gemini*) ACTOR="agent" ;;
+          esac
+          set +e
+          fixjack-verify --ecosystem "${{ vars.FIXJACK_ECOSYSTEM || 'npm' }}" --auto \
+            --resolve-alerts "${{ github.repository }}" --lockfile-diff lockfile.patch \
+            --mode "${{ vars.FIXJACK_MODE || 'report-only' }}" --actor-type "$ACTOR" \
+            --json verdict.json | tee verify.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Comment the verdict (report-only and validate)
+        if: always() && vars.FIXJACK_MODE != 'prevent'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo '<!-- fixjack -->'
+            echo '**fixjack verify** (`'"${{ vars.FIXJACK_MODE || 'report-only' }}"'`)'
+            echo
+            echo '```'
+            cat verify.txt
+            echo '```'
+          } > comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+
+      - name: Enforce
+        if: always()
+        run: exit "${{ steps.verify.outputs.exit }}"

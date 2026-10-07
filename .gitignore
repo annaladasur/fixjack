@@ -1,0 +1,13 @@
+# scenario fixtures are authored locally and never distributed
+harness/fixtures/
+runs/
+harness/registries/verdaccio/config.rendered.yaml
+seed/*/node_modules/
+seed/*/.fixjack-context/
+worksheet/baseline-*.csv
+*.patch
+verdict.json
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/

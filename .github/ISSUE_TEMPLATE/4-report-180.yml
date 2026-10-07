@@ -1,0 +1,30 @@
+name: 4. 180-day report
+description: Did it stick, and what would you change?
+title: '[180-day] '
+labels: [challenge, report-180]
+body:
+  - type: dropdown
+    id: permanent
+    attributes:
+      label: Is the gate a permanent required check?
+      options: ["Yes", "On some repositories", "No, we backed off", "Never got there"]
+    validations:
+      required: true
+  - type: input
+    id: repos
+    attributes:
+      label: Repositories covered
+  - type: dropdown
+    id: level5
+    attributes:
+      label: Do you replay attack scenarios against the live gate (Level 5)?
+      options: ["Yes", "Partly", "No"]
+  - type: textarea
+    id: new_uses
+    attributes:
+      label: New use cases
+      description: For example other agent-authored changes, IaC, container tags
+  - type: textarea
+    id: change
+    attributes:
+      label: What would you change about the control or the kit

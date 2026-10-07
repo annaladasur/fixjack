@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Implementation challenge overview
+    url: https://github.com/annaladasur/fixjack/blob/main/CHALLENGE.md
+    about: What the 30/90/180-day challenge is and how reports are used.

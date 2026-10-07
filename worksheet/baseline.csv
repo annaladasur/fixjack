@@ -1,0 +1,1 @@
+date,repo,pr_id,author_type,advisory_id,chosen_version,semver_relation_to_fix,attestation_present,age_days,verdict,reason,human_override,override_reason,time_to_merge_hours

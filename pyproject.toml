@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fixjack"
+version = "0.1.0"
+description = "Verify that no bot or agent can choose a dependency version from text an attacker can write."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+  "httpx>=0.27",
+  "packaging>=23.0",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+fixjack-verify = "verify.cli:main"
+fixjack-baseline = "worksheet.baseline:main"
+fixjack-score = "harness.score:main"
+fixjack-replay = "harness.replay:main"
+
+[tool.setuptools]
+packages = ["verify", "verify.authorities", "harness", "harness.agents", "worksheet"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

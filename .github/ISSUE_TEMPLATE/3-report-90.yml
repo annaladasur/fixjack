@@ -1,0 +1,38 @@
+name: 3. 90-day report
+description: What the gate did on real traffic.
+title: '[90-day] '
+labels: [challenge, report-90]
+body:
+  - type: dropdown
+    id: level
+    attributes:
+      label: Level reached
+      options: [1 Observe, 2 Recommend, 3 Validate, 4 Prevent, 5 Continuously validate, Backed off]
+    validations:
+      required: true
+  - type: input
+    id: repos
+    attributes:
+      label: Repositories with the verifier running
+  - type: input
+    id: verification_rate
+    attributes:
+      label: Verification rate (share of non-human dependency PRs the verifier saw)
+  - type: input
+    id: false_block_rate
+    attributes:
+      label: False-block rate
+      description: Would-be blocks a human judged legitimate, over all non-human dependency PRs
+  - type: textarea
+    id: reasons
+    attributes:
+      label: Block-reason distribution
+      description: Counts per reason, from the verdict JSON or the worksheet
+  - type: input
+    id: ttm
+    attributes:
+      label: Time-to-merge change against your Week 1 baseline
+  - type: textarea
+    id: caught
+    attributes:
+      label: Anything the gate caught, or wrongly blocked, that mattered

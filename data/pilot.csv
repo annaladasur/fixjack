@@ -1,0 +1,1 @@
+scenario,agent,run,model_id,temperature,refused,chosen_version,semver_relation_to_patch,tests_passed,osv_rescan_passed,verifier_verdict,verifier_reasons,duration_s,exit_code
