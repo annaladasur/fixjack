@@ -3,7 +3,7 @@
 A merge gate that takes the dependency-version decision away from text an attacker can write. When a bot or AI agent picks the version for a vulnerability fix, fixjack re-derives that decision from sources the attacker cannot write, and blocks or routes to a human when they disagree.
 
 Status:
-- A working verifier: 85 tests pass locally with OPA installed, including the cases that check the Rego policy and the Python engine agree. `.github/workflows/test.yml` fails if any test is skipped.
+- A working verifier: 89 tests pass in GitHub Actions with OPA installed, including the cases that check the Rego policy and the Python engine agree. `.github/workflows/test.yml` fails if any test is skipped.
 - The Level 1 baseline tool, the measurement worksheet, the scenario matrix and the pilot harness, with a preregistration that is not yet frozen.
 - A verifier-only replay of real bot PRs.
 - No pilot or replay data yet. Results will land in `data/`.
@@ -138,7 +138,7 @@ Earlier work also shows that untrusted text can steer coding agents into vulnera
 - the security fix itself as the target;
 - six remediation-specific channels;
 - which existing gate misses each hijack;
-- a deployable verifier, with its false-block rate measured on real bot PRs.
+- a deployable verifier, with its false-block rate to be measured on real bot PRs.
 
 See `docs/related-work.md`.
 

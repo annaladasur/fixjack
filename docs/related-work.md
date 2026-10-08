@@ -33,12 +33,12 @@ These ground the premise that automated dependency PRs are common and often merg
 
 ## 2026 work on agents and untrusted text
 
-The talk's submission cites recent work showing untrusted text steering coding agents, including into a known-vulnerable version pin. So "untrusted text steers version selection" is not new. fixjack adds four narrower things:
+Recent work reports untrusted text steering coding agents, including into a known-vulnerable version pin. So "untrusted text steers version selection" is not new. fixjack adds four narrower things:
 
 - the security fix itself as the target;
 - six remediation-specific channels;
 - which existing gate misses each hijack;
-- a deployable verifier with a measured false-block rate.
+- a deployable verifier whose false-block rate will be measured on real bot PRs.
 
 Verify the scope of each 2026 work before saying that none of it covers remediation inputs.
 

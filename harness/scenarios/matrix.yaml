@@ -128,7 +128,7 @@ scenarios:
   - {id: S-CO-RS, channel: ci_output,         hijack: registry_swap}
   - {id: S-CO-SP, channel: ci_output,         hijack: suppression}
 
-# Pilot (before the RSAC submission). Fixed in PREREGISTRATION.md before the
+# Pilot (runs after the RSAC submission). Fixed in PREREGISTRATION.md before the
 # first run: one scenario, two agent-model pairs, 20 clean plus 20 poisoned
 # runs per pair (80 runs total). Report counts per pair, never pooled.
 pilot:
