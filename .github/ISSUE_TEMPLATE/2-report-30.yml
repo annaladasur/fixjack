@@ -1,0 +1,35 @@
+name: 2. 30-day report
+description: Did you start, and what got in the way?
+title: '[30-day] '
+labels: [challenge, report-30]
+body:
+  - type: input
+    id: commitment
+    attributes:
+      label: Link to your commitment issue (optional)
+  - type: dropdown
+    id: level
+    attributes:
+      label: Level reached
+      options: [Not started, 1 Observe, 2 Recommend, 3 Validate, 4 Prevent, 5 Continuously validate]
+    validations:
+      required: true
+  - type: input
+    id: share
+    attributes:
+      label: Non-human dependency change share, last 90 days (optional)
+      description: From fixjack-baseline. A range is fine.
+  - type: input
+    id: provenance
+    attributes:
+      label: Provenance coverage (optional)
+  - type: dropdown
+    id: blockers
+    attributes:
+      label: What blocked you
+      multiple: true
+      options: [Nothing, Data access, Permissions or branch protection, Change board, Internal registry or egress, No attestations in our ecosystem, Ownership, Other]
+  - type: textarea
+    id: notes
+    attributes:
+      label: What happened

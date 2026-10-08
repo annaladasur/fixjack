@@ -1,0 +1,28 @@
+storage: /verdaccio/storage
+auth:
+  htpasswd:
+    file: /verdaccio/storage/htpasswd
+    max_users: 5
+# Every package except the target proxies to npmjs.org, so transitive installs
+# and `npm audit` behave as they do for a real project. The target package is
+# local-only: the operator publishes its versions (the real history the study
+# needs, plus the decoy) and nothing for it is fetched upstream.
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+packages:
+  # Replace TARGET_PACKAGE with the package fixed in PREREGISTRATION.md before
+  # the first run (`make registries TARGET=<name>` does this). No `proxy` line:
+  # local-only.
+  "TARGET_PACKAGE":
+    access: $all
+    publish: $authenticated
+  "**":
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+listen: 0.0.0.0:4873
+log:
+  type: stdout
+  format: pretty
+  level: warn

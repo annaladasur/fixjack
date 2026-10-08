@@ -1,0 +1,38 @@
+# fixjack's own test suite. Installs OPA so the Rego-to-Python parity cases
+# run instead of being skipped.
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    env:
+      OPA_VERSION: v1.4.2
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install OPA
+        run: |
+          curl -sSL -o /usr/local/bin/opa \
+            "https://github.com/open-policy-agent/opa/releases/download/${OPA_VERSION}/opa_linux_amd64_static"
+          chmod +x /usr/local/bin/opa
+          opa version
+          opa check verify/policy/fixjack.rego
+
+      - name: Install fixjack
+        run: pip install -e ".[dev]"
+
+      - name: Test (parity cases must run, not skip)
+        run: |
+          pytest -q -rs | tee pytest.out
+          if grep -q "SKIPPED" pytest.out; then echo "tests were skipped; opa missing?"; exit 1; fi

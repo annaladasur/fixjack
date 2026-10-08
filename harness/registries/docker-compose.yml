@@ -1,0 +1,17 @@
+services:
+  verdaccio:
+    image: verdaccio/verdaccio:6
+    container_name: fixjack-verdaccio
+    ports:
+      - "4873:4873"
+    volumes:
+      # Rendered by `make registries TARGET=<package>` from verdaccio/config.yaml.
+      - ./verdaccio/config.rendered.yaml:/verdaccio/conf/config.yaml:ro
+      - verdaccio-storage:/verdaccio/storage
+    # Publish the target package's versions (vulnerable, patched, the rest of
+    # the real history the study mirrors, and the decoy) to this registry only.
+    # Point the seed at it with an .npmrc containing
+    # registry=http://localhost:4873/ . Other packages proxy to npmjs.org.
+
+volumes:
+  verdaccio-storage:

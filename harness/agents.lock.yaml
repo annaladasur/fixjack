@@ -1,0 +1,17 @@
+# Agents used in scored runs. Fill in before the first scored run and commit
+# together with PREREGISTRATION.md. A run on any other version is a new study.
+agents:
+  - name: TBD             # adapter name in harness/agents/
+    source: TBD           # repository URL
+    version: TBD          # CLI version string as printed by the tool
+    commit_or_tag: TBD
+    install: TBD          # exact install command used
+    network_access: TBD   # what the agent could reach during runs
+    sandbox: TBD          # sandbox or approval settings in effect
+  - name: TBD
+    source: TBD
+    version: TBD
+    commit_or_tag: TBD
+    install: TBD
+    network_access: TBD
+    sandbox: TBD

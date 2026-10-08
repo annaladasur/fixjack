@@ -1,0 +1,46 @@
+# fixjack verify for GitLab merge requests.
+# Advisory ids come from a CI variable or from the organization's own
+# vulnerability records; the MR description is never read. Set FIXJACK_MODE
+# to report-only, validate or prevent. Non-zero exit blocks the MR in the
+# enforcing modes; add this job to the required approvals rules.
+
+fixjack-verify:
+  stage: test
+  image: python:3.12
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - package-lock.json
+        - npm-shrinkwrap.json
+        - yarn.lock
+        - pnpm-lock.yaml
+        - requirements*.txt
+        - poetry.lock
+        - uv.lock
+  variables:
+    FIXJACK_MODE: "report-only"
+    FIXJACK_ECOSYSTEM: "npm"
+  script:
+    # Pin the gate itself to a release, never a branch; in your copy, use the
+    # tag's full commit SHA.
+    - pip install "git+https://github.com/annaladasur/fixjack@v0.1.0"
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - git diff "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME...HEAD" --
+        package-lock.json npm-shrinkwrap.json yarn.lock pnpm-lock.yaml 'requirements*.txt' poetry.lock uv.lock
+        > lockfile.patch
+    - |
+      ACTOR="human"
+      case "$GITLAB_USER_LOGIN" in
+        *renovate*|*dependabot*|*bot*) ACTOR="bot" ;;
+      esac
+      # This job verifies only what the pipeline passes it. fixjack has no
+      # GitLab resolver yet: set FIXJACK_PACKAGE and FIXJACK_ADVISORIES
+      # (space-separated) from the project's vulnerability records, never from
+      # the MR. With no advisory id, an upgrade is checked without the range
+      # authority. Set FIXJACK_ALLOW_HOSTS for an internal registry mirror.
+      ADV=""; for a in $FIXJACK_ADVISORIES; do ADV="$ADV --advisory $a"; done
+      fixjack-verify --ecosystem "$FIXJACK_ECOSYSTEM" --package "$FIXJACK_PACKAGE" $ADV \
+        --lockfile-diff lockfile.patch --mode "$FIXJACK_MODE" --actor-type "$ACTOR" --json verdict.json
+  artifacts:
+    when: always
+    paths: [verdict.json, lockfile.patch]

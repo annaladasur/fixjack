@@ -1,0 +1,51 @@
+name: 1. Implementation commitment (day 0)
+description: What you will implement first and where you are starting.
+title: '[commitment] '
+labels: [challenge, commitment]
+body:
+  - type: markdown
+    attributes:
+      value: Organization name is optional; ranges are fine for numbers. See CHALLENGE.md for how reports are used.
+  - type: dropdown
+    id: org_type
+    attributes:
+      label: Organization type
+      options: [Financial services, Healthcare, Energy / utilities, Public sector, Technology / SaaS, Retail / e-commerce, Other, Prefer not to say]
+    validations:
+      required: true
+  - type: dropdown
+    id: ecosystems
+    attributes:
+      label: Ecosystems in scope
+      multiple: true
+      options: [npm, PyPI, Maven, NuGet, Go, Other]
+  - type: dropdown
+    id: forge
+    attributes:
+      label: Code host and CI
+      multiple: true
+      options: [GitHub.com, GitHub Enterprise Server, GitLab, Other]
+  - type: dropdown
+    id: registry
+    attributes:
+      label: Where packages resolve from
+      options: [Public registries, An internal mirror or proxy, Both, Don't know]
+  - type: dropdown
+    id: who_changes
+    attributes:
+      label: What changes dependency versions today
+      multiple: true
+      options: [Dependabot, Renovate, Assigned coding agents, SCA autofix, Internal scripts, Don't know]
+  - type: dropdown
+    id: start_level
+    attributes:
+      label: Starting level
+      options: [1 Observe, 2 Recommend, 3 Validate, 4 Prevent, 5 Continuously validate]
+    validations:
+      required: true
+  - type: textarea
+    id: first_action
+    attributes:
+      label: Your first action this week
+    validations:
+      required: true
